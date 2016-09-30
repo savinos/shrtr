@@ -1,15 +1,24 @@
 package io.shrtr.server;
-import java.util.zip.CRC32;
+import java.nio.charset.StandardCharsets;
 
-import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
 public class CRC32Shortener implements Shortener {
+	
+	private final String prefix;
+
+	public CRC32Shortener(String prefix) {
+		this.prefix = prefix;
+	}
 	
 	@Override
 	public String shorten(String url) {
-		CRC32 crc = new CRC32();
-		crc.update(url.getBytes(Charsets.UTF_8));
-		long value = crc.getValue();
-		return Long.toHexString(value);
+		return String.format("%s%s", prefix(), 
+				Hashing.crc32().hashString(url, StandardCharsets.UTF_8).toString());
+	}
+
+	@Override
+	public String prefix() {
+		return prefix;
 	}
 
 }
