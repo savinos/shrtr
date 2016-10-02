@@ -41,5 +41,4 @@ public class ShrtrResource implements ShrtrService {
 		}
 		throw new WebApplicationException(Status.NOT_FOUND);
 	}
-
 }

@@ -27,5 +27,4 @@ public class ShrtrResourceTest {
 	public void testShortenThrowsOnNull() {
 		shrtr.shorten(null);
 	}
-
 }
