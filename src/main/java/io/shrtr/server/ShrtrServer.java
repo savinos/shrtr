@@ -9,10 +9,13 @@ public class ShrtrServer extends Application<ShrtrConfiguration> {
 	@Override
 	public void run(ShrtrConfiguration configuration, Environment environment) throws Exception {
 		final ShrtrService shrtr = new ShrtrResource(
-				new CRC32Shortener("https://shrtr.io/"),  //TODO conf
+				new MurmurShortener(configuration.prefix()), 
 				new InMemoryPersister());
 		
 		environment.jersey().register(shrtr);
 	}
 
+	public static void main(String[] args) throws Exception {
+        new ShrtrServer().run(args);
+    }
 }

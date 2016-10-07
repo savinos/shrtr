@@ -11,6 +11,7 @@ public class InMemoryPersister implements Persister {
 
 	@Override
 	public void storeMapping(String fullLength, String shortened) {
+		// TODO collisions?
 		store.put(shortened, fullLength);
 	}
 
