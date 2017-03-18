@@ -7,10 +7,25 @@
  * user guide available at https://docs.gradle.org/3.1/userguide/tutorial_java_projects.html
  */
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.12.0"
+  }
+}
+
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'application'
+apply plugin: 'distribution'
+apply plugin: "com.palantir.docker"
 // In this section you declare where to find the dependencies of your project
+
 repositories {
     // Use 'jcenter' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -30,3 +45,24 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
 }
+
+docker {
+    name 'io.shrtr:0.0.1'
+    files tasks.distTar.outputs
+}
+
+distributions {
+    main {
+        contents {
+	    into('var') {
+                from('var')
+            }
+            into('lib') {
+                from jar
+                from(project.configurations.runtime)
+            } 
+        }
+    }
+}
+
+mainClassName = "io.shrtr.server.ShrtrServer"
