@@ -7,6 +7,7 @@ I maintain this mostly to experiment with a few technologies.
 -- CONFIG --
 
 > var/conf/shrtr.yml
+
 prefix: $shrtr_host
 
 
