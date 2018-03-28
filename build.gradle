@@ -40,8 +40,8 @@ dependencies {
 	compile 'io.dropwizard:dropwizard-core:1.0.2'
 	compile 'com.amazonaws:aws-lambda-java-core:1.1.0'
 	compile 'com.amazonaws:aws-lambda-java-events:1.3.0'
-	testCompile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.302'
-	testCompile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.302'
+	compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.302'
+	compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.302'
 
 
     testCompile 'junit:junit:4.12'

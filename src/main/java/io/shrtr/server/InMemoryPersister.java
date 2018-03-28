@@ -12,8 +12,11 @@ public class InMemoryPersister implements Persister {
 	@Override
 	public void storeMapping(String fullLength, String shortened) {
 		// on collision we throw, for now
-		if (store.containsKey(shortened)) {
-			handleCollision(fullLength, shortened);
+		if (sameHashAlreadyPresent(fullLength, shortened)) {
+			if (differentUrlSameHash(fullLength, shortened)) {
+				handleCollision(fullLength, shortened);
+			} 
+			return;
 		}
 		store.put(shortened, fullLength);
 	}
@@ -23,6 +26,14 @@ public class InMemoryPersister implements Persister {
 		return Optional.fromNullable(store.get(shortened));
 	}
 
+	private boolean sameHashAlreadyPresent(String fullLength, String shortened) {
+		return store.containsKey(shortened);
+	}
+	
+	private boolean differentUrlSameHash(String fullLength, String shortened) {
+		return !store.get(shortened).equals(fullLength);
+	}
+	
 	@Override
 	public void handleCollision(String fullLength, String shortened) {
 		throw new RuntimeException("Error shortening URL: " + fullLength);

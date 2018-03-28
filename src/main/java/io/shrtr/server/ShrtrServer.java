@@ -10,7 +10,7 @@ public class ShrtrServer extends Application<ShrtrConfiguration> {
 	public void run(ShrtrConfiguration configuration, Environment environment) throws Exception {
 		final ShrtrService shrtr = new ShrtrResource(
 				new MurmurShortener(configuration.prefix()), 
-				new InMemoryPersister());
+				new DynamoDBPersister());
 		
 		environment.jersey().register(shrtr);
 	}
