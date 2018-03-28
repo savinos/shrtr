@@ -11,7 +11,10 @@ public class InMemoryPersister implements Persister {
 
 	@Override
 	public void storeMapping(String fullLength, String shortened) {
-		// TODO collisions?
+		// on collision we throw, for now
+		if (store.containsKey(shortened)) {
+			handleCollision(fullLength, shortened);
+		}
 		store.put(shortened, fullLength);
 	}
 
@@ -19,5 +22,9 @@ public class InMemoryPersister implements Persister {
 	public Optional<String> getMapping(String shortened) {
 		return Optional.fromNullable(store.get(shortened));
 	}
-	
+
+	@Override
+	public void handleCollision(String fullLength, String shortened) {
+		throw new RuntimeException("Error shortening URL: " + fullLength);
+	}
 }

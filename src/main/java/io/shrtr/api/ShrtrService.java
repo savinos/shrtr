@@ -5,6 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -20,6 +21,6 @@ public interface ShrtrService {
 	@GET
 	@Timed
 	@Path("/actual")
-	public String actualUrl(@QueryParam("url") String shortenedUrl);
+	public Response actualUrl(@QueryParam("url") String shortenedUrl);
 	
 }

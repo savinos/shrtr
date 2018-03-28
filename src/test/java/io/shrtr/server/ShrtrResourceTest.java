@@ -1,6 +1,9 @@
 package io.shrtr.server;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.junit.Test;
 
@@ -18,8 +21,9 @@ public class ShrtrResourceTest {
 		String expectedShort = "https://shrtr.io/6b5b1e33";
 		assertEquals(expectedShort, shortened);
 		
-		String actual = shrtr.actualUrl(shortened);
-		assertEquals("https://www.google.com", actual);
+		Response actual = shrtr.actualUrl(shortened);
+		assertEquals(Status.TEMPORARY_REDIRECT.getStatusCode(), actual.getStatus());
+		assertEquals("https://www.google.com", actual.getLocation().toString());
 	}
 	
 	

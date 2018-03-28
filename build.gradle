@@ -38,11 +38,12 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
 	compile 'org.immutables:value:2.3'
 	compile 'io.dropwizard:dropwizard-core:1.0.2'
+	compile 'com.amazonaws:aws-lambda-java-core:1.1.0'
+	compile 'com.amazonaws:aws-lambda-java-events:1.3.0'
+	testCompile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.302'
+	testCompile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.302'
 
-    // Declare the dependency for your favourite test framework you want to use in your tests.
-    // TestNG is also supported by the Gradle Test task. Just change the
-    // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
-    // 'test.useTestNG()' to your build script.
+
     testCompile 'junit:junit:4.12'
 }
 
@@ -54,15 +55,21 @@ docker {
 distributions {
     main {
         contents {
-	    into('var') {
-                from('var')
-            }
-            into('lib') {
-                from jar
-                from(project.configurations.runtime)
-            } 
+		    into('var') {
+	                from('var')
+	        }
+	        into('lib') {
+	            from jar
+	            from(project.configurations.runtime)
+	        } 
         }
     }
+}
+
+jar {
+  manifest {
+    attributes "Main-Class" : "io.shrtr.server.ShrtrServer"
+  }
 }
 
 mainClassName = "io.shrtr.server.ShrtrServer"

@@ -1,8 +1,13 @@
 package io.shrtr.server;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
+import java.net.URI;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -29,16 +34,24 @@ public class ShrtrResource implements ShrtrService {
 				String.format("Argument should not be larger than %s.", MAX_INPUT_SIZE));
 		
 		String shortenedUrl = shortener.shorten(url);
-		persister.storeMapping(url, shortenedUrl);
+		try {
+			persister.storeMapping(url, shortenedUrl);
+		} catch (Exception e) {
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		}
 		return shortenedUrl;
 	}
 
 	@Override
-	public String actualUrl(String shortenedUrl) {
+	public Response actualUrl(String shortenedUrl) {
 		Optional<String> actual = persister.getMapping(shortenedUrl);
 		if (actual.isPresent()) {
-			return actual.get();
+			return Response.temporaryRedirect(asURI(actual)).build();
 		}
 		throw new WebApplicationException(Status.NOT_FOUND);
+	}
+
+	private URI asURI(Optional<String> actual) {
+		return UriBuilder.fromPath(actual.get()).build();
 	}
 }
