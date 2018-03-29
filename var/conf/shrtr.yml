@@ -1,2 +1,3 @@
 # configuration
 prefix: https://shortener.com/
+store: dynamodb
