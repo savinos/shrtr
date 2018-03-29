@@ -43,8 +43,12 @@ dependencies {
 	compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.302'
 	compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.302'
 
+	//dynamodb transaction library
+	compile files('lib/amazon-dynamodb-transactions-1.1.2.jar')
 
     testCompile 'junit:junit:4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+    
 }
 
 docker {
@@ -56,9 +60,10 @@ distributions {
     main {
         contents {
 		    into('var') {
-	                from('var')
+				from('var')
 	        }
 	        into('lib') {
+	        	from('lib')
 	            from jar
 	            from(project.configurations.runtime)
 	        } 
