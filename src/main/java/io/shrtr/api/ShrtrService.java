@@ -2,6 +2,7 @@ package io.shrtr.api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -21,6 +22,11 @@ public interface ShrtrService {
 	@GET
 	@Timed
 	@Path("/actual")
-	public Response actualUrl(@QueryParam("url") String shortenedUrl);
+	public String actualUrl(@QueryParam("url") String shortenedUrl);
+	
+	@GET
+	@Timed
+	@Path("/")
+	public Response visit(@PathParam("url") String shortenedUrl);
 	
 }

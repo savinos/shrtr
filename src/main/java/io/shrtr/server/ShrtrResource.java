@@ -7,20 +7,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import io.shrtr.api.ShrtrService;
-
 
 public class ShrtrResource implements ShrtrService {
 
 	private static final int MAX_INPUT_SIZE = 10000;
 	private final Shortener shortener;
 	private final Persister persister;
+	private final ShrtrConfiguration config;
 
-	public ShrtrResource(Shortener shortener, Persister persister) {
+	public ShrtrResource(ShrtrConfiguration config, Shortener shortener, Persister persister) {
+		this.config = config;
 		this.shortener = shortener;
 		this.persister = persister;
 	}
@@ -43,14 +43,23 @@ public class ShrtrResource implements ShrtrService {
 	}
 
 	@Override
-	public Response actualUrl(String shortenedUrl) {
+	public String actualUrl(String shortenedUrl) {
 		Optional<String> actual = persister.getMapping(shortenedUrl);
+		if (actual.isPresent()) {
+			return actual.get();
+		}
+		throw new WebApplicationException(Status.NOT_FOUND);
+	}
+
+	@Override
+	public Response visit(String shortenedUrl) {
+		Optional<String> actual = persister.getMapping(config.prefix() + shortenedUrl);
 		if (actual.isPresent()) {
 			return Response.temporaryRedirect(asURI(actual)).build();
 		}
 		throw new WebApplicationException(Status.NOT_FOUND);
 	}
-
+	
 	private URI asURI(Optional<String> actual) {
 		return UriBuilder.fromPath(actual.get()).build();
 	}
