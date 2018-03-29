@@ -1,14 +1,12 @@
 package io.shrtr.server;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
@@ -26,39 +24,40 @@ import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
  */
 public class DynamoDBPersisterTest {
 
-	AmazonDynamoDB dynamoDb = ddbLocalClient();
+	// test client pointing to localhost dynamodb
+	AmazonDynamoDB dynamoDb = TestUtils.ddbLocalClient();
+	
 	Persister dps = new DynamoDBPersister(dynamoDb);
 	
 	@Before
 	public void setUp() {
-		dynamoDb.createTable(new CreateTableRequest()
-				.withTableName("SHORT_URLS")
-				.withAttributeDefinitions(new AttributeDefinition().withAttributeName("short_url").withAttributeType(ScalarAttributeType.S))
-				.withKeySchema(new KeySchemaElement().withAttributeName("short_url").withKeyType(KeyType.HASH))
-				.withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L)));
+		TestUtils.setupShortUrlTable();
 	}
 	
 	@After
 	public void tearDown() {
-		dynamoDb.deleteTable("SHORT_URLS");
+		TestUtils.deleteShortUrlTable();
 	}
 	
 	@Test
-	public void testBasicStoreAndGet() {
+	public void testBasicStoreAndGet() throws Exception {
 		try {
 			dps.storeMapping("http://www.google.com", "abc");
 			assertEquals("http://www.google.com", dps.getMapping("abc").get());
 		} catch (Exception e) {
-			fail(e.getMessage());
+			throw e;
+		}
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testCollision() throws Exception {
+		try {
+			dps.storeMapping("http://www.google.com", "abc");
+			assertEquals("http://www.google.com", dps.getMapping("abc").get());
+			dps.storeMapping("http://www.google.it", "abc");
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 
-	
-	private AmazonDynamoDB ddbLocalClient() {
-		AmazonDynamoDB dynamoDb = AmazonDynamoDBClientBuilder.standard()
-				.withEndpointConfiguration(
-						new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "eu-west-2"))
-				.build();
-		return dynamoDb;
-	}
 }
