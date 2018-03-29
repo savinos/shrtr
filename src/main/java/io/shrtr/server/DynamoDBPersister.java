@@ -2,12 +2,10 @@ package io.shrtr.server;
 
 import java.util.Map;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
@@ -22,9 +20,11 @@ public class DynamoDBPersister implements Persister {
 	private static final String SHORT_URL_TABLE_KEY_NAME = "short_url";
 	private static final String SHORT_URL_TABLE_LONG_URL = "long_url";
 	private final AmazonDynamoDB dynamoDb;
-
+	
+	
 	public DynamoDBPersister() {
 		dynamoDb = ddbClient();
+		
 	}
 	
 	@VisibleForTesting
@@ -40,24 +40,14 @@ public class DynamoDBPersister implements Persister {
 			attributes.put(SHORT_URL_TABLE_KEY_NAME, new AttributeValue().withS(shortened));
 			attributes.put(SHORT_URL_TABLE_LONG_URL, new AttributeValue().withS(fullLength));
 			
-			// TODO start transaction
-			Optional<String> stored = getMapping(shortened);
-			if (stored.isPresent()) {
-				if (!stored.get().equals(fullLength)) {
-					handleCollision(fullLength, shortened);
-				}
-				//TODO rollback
-				return;
-			} 
-			
-			// TODO config param: URL TTL ?
+			// only succeeds if the short url does not exist in dynamodb
 			dynamoDb.putItem(new PutItemRequest()
 					.withTableName(SHORT_URL_TABLE_NAME)
-					.withItem(attributes));
+					.withItem(attributes)
+					.withConditionExpression(keyDoesNotExist()));
 			
-			// TODO commit, end transaction
 		} catch (Exception e) {
-			throw e;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -68,7 +58,7 @@ public class DynamoDBPersister implements Persister {
 
 		GetItemResult result = dynamoDb.getItem(get);		
 		Map<String, AttributeValue> returnedItem = result.getItem();
-		if (returnedItem.isEmpty()) {
+		if (null == returnedItem || returnedItem.isEmpty()) {
 			return Optional.absent();
 		}
 		return Optional.fromNullable(returnedItem.get(SHORT_URL_TABLE_LONG_URL).getS());
@@ -90,4 +80,13 @@ public class DynamoDBPersister implements Persister {
 				.build();
 		return dynamoDb;
 	}
+	
+	private boolean differentUrlSameHash(String fullLength, Optional<String> stored) {
+		return !stored.get().equals(fullLength);
+	}
+	
+	private String keyDoesNotExist() {
+		return String.format("attribute_not_exists(%s)", SHORT_URL_TABLE_KEY_NAME);
+	}
+	
 }
