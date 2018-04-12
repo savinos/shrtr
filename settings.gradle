@@ -1,7 +1,3 @@
 
-pluginRepositories {
-  
-}
-
 
 rootProject.name = 'shrtr'
