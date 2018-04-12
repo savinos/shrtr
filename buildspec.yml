@@ -18,7 +18,8 @@ phases:
       - export PATH=$PATH:/opt/gradle/gradle-4.4/bin
   build:
     commands:
-      - gradle docker distTar 
+      - docker run -d -p 8000:8000 --name dynamodb deangiberson/aws-dynamodb-local
+      - gradle test docker distTar 
   post_build:
     commands:
       - echo Build completed on `date`
