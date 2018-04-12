@@ -23,7 +23,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'distribution'
-apply plugin: "com.palantir.docker"
+//apply plugin: "com.palantir.docker"
 // In this section you declare where to find the dependencies of your project
 
 repositories {
@@ -51,10 +51,10 @@ dependencies {
     
 }
 
-docker {
-    name 'io.shrtr:0.0.1'
-    files tasks.distTar.outputs
-}
+//docker {
+//    name 'io.shrtr:0.0.1'
+//    files tasks.distTar.outputs
+//}
 
 distributions {
     main {
