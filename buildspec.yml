@@ -4,7 +4,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - ./gradlew build docker
+      - ./gradlew build
   post_build:
     commands:
       - echo Build completed on `date`
