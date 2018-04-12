@@ -7,15 +7,13 @@ include 'api'
 include 'services:webservice'
 */
 
+pluginRepositories {
+  gradlePluginPortal()
+ 
+  maven {
+    url 'https://plugins.gradle.org/m2'
+  }
 
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven {
-            url 'https://plugins.gradle.org/m2'
-        }
-    }
 }
 
 
