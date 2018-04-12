@@ -14,10 +14,9 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.palantir.docker:com.palantir.docker.gradle.plugin:gradle-docker:0.19.2"
+    classpath "com.palantir.docker:com.palantir.docker.gradle.plugin:0.19.2"
   }
 }
-
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
