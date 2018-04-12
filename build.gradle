@@ -14,7 +14,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath files('gradle/plugins/gradle-docker-0.19.2.jar')
+    classpath "com.palantir.docker:com.palantir.docker.gradle.plugin:0.19.2"
   }
 }
 
