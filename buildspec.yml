@@ -6,6 +6,7 @@ env:
 phases:
   build:
     commands:
+      - gradle -v
       - echo Build started on `date`
       - gradle build
   post_build:
