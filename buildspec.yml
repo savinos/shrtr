@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - ./gradlew build docker
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ./gradlew distTar
+artifacts:
+  files:
+    - build/distributions/shrtr.tar
