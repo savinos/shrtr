@@ -7,11 +7,11 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - ./gradlew build
+      - gradle build
   post_build:
     commands:
       - echo Build completed on `date`
-      - ./gradlew distTar
+      - gradle distTar
 artifacts:
   files:
     - build/distributions/shrtr.tar
