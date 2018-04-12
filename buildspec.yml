@@ -6,13 +6,10 @@ env:
 phases:
   build:
     commands:
-      - gradle -v
-      - echo Build started on `date`
-      - gradle build
+      - gradle --debug distTar 
   post_build:
     commands:
       - echo Build completed on `date`
-      - gradle distTar
 artifacts:
   files:
     - build/distributions/shrtr.tar
