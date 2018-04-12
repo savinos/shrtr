@@ -18,8 +18,7 @@ phases:
       - export PATH=$PATH:/opt/gradle/gradle-4.4/bin
   build:
     commands:
-      - gradle -v
-      - gradle --stacktrace distTar 
+      - gradle docker distTar 
   post_build:
     commands:
       - echo Build completed on `date`
