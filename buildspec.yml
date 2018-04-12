@@ -4,6 +4,11 @@ env:
   variables:
     JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
 phases:
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y gradle
+      - apt-get install -y openjdk-8-jdk
   build:
     commands:
       - gradle --debug distTar 
