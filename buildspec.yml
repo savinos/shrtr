@@ -11,6 +11,8 @@ phases:
       - add-apt-repository ppa:openjdk-r/ppa
       - apt-get update -y
       - apt-get install -y openjdk-8-jdk wget unzip
+      - sudo dpkg --purge --force-depends ca-certificates-java
+      - sudo apt-get install ca-certificates-java
       - wget https://services.gradle.org/distributions/gradle-4.4-bin.zip
       - mkdir /opt/gradle && unzip -d /opt/gradle gradle-4.4-bin.zip
       - export PATH=$PATH:/opt/gradle/gradle-4.4/bin
